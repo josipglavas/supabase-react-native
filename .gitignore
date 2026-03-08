@@ -1,0 +1,59 @@
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Expo
+.expo/
+.expo-shared/
+expo-env.d.ts
+dist/
+
+# React Native
+.watchman-cookie
+ios/Pods/
+android/gradle.properties
+android/.gradle
+
+# Build outputs
+build/
+dist/
+*.apk
+*.aab
+*.ipa
+
+# Prisma
+/lib/generated/prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# System files
+.AppleDouble
+.LSOverride
+*.pem

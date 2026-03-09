@@ -8,10 +8,10 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
-import { useColorScheme } from "@/components/useColorScheme";
+import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { AuthProvider } from "@/provider/AuthProvider";
+import { useColorScheme } from "nativewind";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -40,18 +40,13 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const systemColorScheme = useColorScheme();
-  const [mode, setMode] = useState<"system" | "light" | "dark">("system");
-
-  // Determine effective color scheme
-  const effectiveColorScheme =
-    mode === "system" ? (systemColorScheme ?? "light") : mode;
+  const { colorScheme } = useColorScheme();
 
   return (
-    <GluestackUIProvider mode={effectiveColorScheme}>
+    <GluestackUIProvider mode={colorScheme}>
       <AuthProvider>
         <ThemeProvider
-          value={effectiveColorScheme === "dark" ? DarkTheme : DefaultTheme}
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           <Stack initialRouteName="(auth)">
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

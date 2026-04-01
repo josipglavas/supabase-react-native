@@ -4,13 +4,14 @@ import { Platform } from "react-native";
 
 type OAuthButtonsProps = {
   onGooglePress: () => Promise<void>;
-  onApplePress: () => Promise<void>;
-  loadingProvider: "google" | "apple" | null;
+  // onApplePress: () => Promise<void>;
+  // loadingProvider: "google" | "apple" | null;
+  loadingProvider: "google" | null;
 };
 
 export const OAuthButtons = ({
   onGooglePress,
-  onApplePress,
+  // onApplePress,
   loadingProvider,
 }: OAuthButtonsProps) => {
   return (
@@ -27,7 +28,7 @@ export const OAuthButtons = ({
         {loadingProvider === "google" && <ButtonSpinner />}
       </Button>
 
-      <Button
+      {/* <Button
         className="flex-1"
         variant="outline"
         action="secondary"
@@ -39,7 +40,7 @@ export const OAuthButtons = ({
           {Platform.OS === "android" ? "Apple (iOS)" : "Apple"}
         </ButtonText>
         {loadingProvider === "apple" && <ButtonSpinner />}
-      </Button>
+      </Button> */}
     </HStack>
   );
 };

@@ -9,11 +9,11 @@ import { useAuth } from "@/provider/AuthProvider";
 
 export default () => {
   const router = useRouter();
-  const { registerEmail, loginGoogle, loginApple, authError } = useAuth();
+  const { registerEmail, loginGoogle, authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loadingProvider, setLoadingProvider] = useState<
-    "google" | "apple" | null
+    "google" | null
   >(null);
 
   const handleRegister = async () => {
@@ -29,14 +29,14 @@ export default () => {
     }
   };
 
-  const handleApple = async () => {
-    setLoadingProvider("apple");
-    try {
-      await loginApple();
-    } finally {
-      setLoadingProvider(null);
-    }
-  };
+  // const handleApple = async () => {
+  //   setLoadingProvider("apple");
+  //   try {
+  //     await loginApple();
+  //   } finally {
+  //     setLoadingProvider(null);
+  //   }
+  // };
 
   return (
     <Layout
@@ -58,7 +58,7 @@ export default () => {
 
       <OAuthButtons
         onGooglePress={handleGoogle}
-        onApplePress={handleApple}
+        // onApplePress={handleApple}
         loadingProvider={loadingProvider}
       />
 

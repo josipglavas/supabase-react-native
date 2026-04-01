@@ -8,7 +8,7 @@ import { ChevronLeftIcon } from "@/components/ui/icon";
 
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
-import { router } from "expo-router";
+import { router, useSegments } from "expo-router";
 import { Spool } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -32,6 +32,8 @@ export default ({
   buttonText: string;
   buttonDisabled: boolean;
 }) => {
+  const segments = useSegments();
+
   // state for loading for button
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +49,7 @@ export default ({
 
   const colorScheme = useColorScheme();
   const iconColor = colorScheme === "dark" ? "#fff" : "#000";
+  const isUsernameScreen = segments[0] === "(auth)" && segments[1] === "username";
 
   return (
     <SafeAreaView>
@@ -58,7 +61,7 @@ export default ({
             <VStack className="items-center justify-center">
               <HStack className="justify-between w-full p-3">
                 {/* Dont show button if first screen / we have nothing to go back to */}
-                {router.canGoBack() ? (
+                {!isUsernameScreen && router.canGoBack() ? (
                   <Button
                     onPress={() => router.back()}
                     size="lg"

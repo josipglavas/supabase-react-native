@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { supabase } from "@/lib/supabase";
 import { Provider } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
@@ -48,7 +49,7 @@ const signInWithOAuthProvider = async (provider: Provider) => {
     provider,
     options: {
       redirectTo,
-      skipBrowserRedirect: true,
+      skipBrowserRedirect: Platform.OS !== "web",
     },
   });
 
@@ -58,6 +59,17 @@ const signInWithOAuthProvider = async (provider: Provider) => {
 
   if (!data?.url) {
     throw new Error("OAuth URL was not returned.");
+  }
+
+  console.log("[supabaseAuth] signInWithOAuthProvider", {
+    provider,
+    url: data.url,
+    platform: Platform.OS,
+  });
+
+  if (Platform.OS === "web") {
+    window.location.assign(data.url);
+    return;
   }
 
   const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);

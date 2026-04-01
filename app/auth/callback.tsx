@@ -1,9 +1,15 @@
 import { useEffect } from "react";
+import { Platform } from "react-native";
 import { router } from "expo-router";
 
 export default function AuthCallback() {
   useEffect(() => {
-    router.replace("/(auth)");
+    if (Platform.OS === "web") {
+      window.location.replace("/");
+      return;
+    }
+
+    router.replace("/");
   }, []);
 
   return null;

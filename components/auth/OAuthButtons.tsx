@@ -1,6 +1,7 @@
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
-import { Platform } from "react-native";
+import GoogleIcon from "./GoogleIcon";
+
 
 type OAuthButtonsProps = {
   onGooglePress: () => Promise<void>;
@@ -17,14 +18,16 @@ export const OAuthButtons = ({
   return (
     <HStack space="sm" className="w-full">
       <Button
-        className="flex-1"
+        className="flex-1 group"
         variant="outline"
         action="secondary"
         size="lg"
         onPress={onGooglePress}
         isDisabled={loadingProvider !== null}
       >
-        <ButtonText>Google</ButtonText>
+        {/* google icon, make it opacity if button is not hovered onto */}
+        <GoogleIcon className="opacity-50 group-hover:opacity-100" />
+        <ButtonText>Continue with Google</ButtonText>
         {loadingProvider === "google" && <ButtonSpinner />}
       </Button>
 

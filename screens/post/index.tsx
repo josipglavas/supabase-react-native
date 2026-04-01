@@ -22,13 +22,15 @@ import { Input, InputField } from "@/components/ui/input";
 
 export default () => {
   const { user } = useAuth();
-  const displayUsername = user?.username || "You";
+  const displayName = user?.firstName || user?.lastName
+    ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
+    : "You";
   return (
     <SafeAreaView className="py-4">
       <VStack>
         <HStack className="items-center px-5 py-0">
           <Avatar size="md">
-            <AvatarFallbackText>{displayUsername}</AvatarFallbackText>
+            <AvatarFallbackText>{displayName}</AvatarFallbackText>
             <AvatarImage
               source={user?.avatar ? { uri: user.avatar } : undefined}
             />
@@ -36,7 +38,7 @@ export default () => {
           <Card size="md" variant="ghost" className="mx-3 py-1 w-full">
             <VStack className="justify-start px-3" space="lg">
               <VStack>
-                <Heading size="md">{displayUsername}</Heading>
+                <Heading size="md">{displayName}</Heading>
                 <Input
                   className="bg-transparent border-0 w-[90%] p-0"
                   size="md"

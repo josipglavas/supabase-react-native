@@ -9,7 +9,7 @@ export default () => {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="register" />
-      <Stack.Screen name="username" />
+      <Stack.Screen name="userdata" />
     </Stack>
   );
 };

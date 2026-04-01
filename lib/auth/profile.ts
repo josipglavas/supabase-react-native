@@ -83,15 +83,23 @@ export const createProfileIfMissing = async (
   return data as User;
 };
 
-export const updateUsername = async (
+export const updateProfileDetails = async (
   id: string,
-  username: string,
+  firstName: string,
+  lastName: string,
+  phone?: string | null,
 ): Promise<User> => {
-  const normalizedUsername = username.trim();
+  const normalizedFirstName = firstName.trim();
+  const normalizedLastName = lastName.trim();
+  const normalizedPhone = phone?.trim() || null;
 
   const { data, error } = await supabase
     .from("User")
-    .update({ username: normalizedUsername })
+    .update({
+      firstName: normalizedFirstName,
+      lastName: normalizedLastName,
+      phone: normalizedPhone,
+    })
     .eq("id", id)
     .select()
     .maybeSingle();
@@ -101,7 +109,7 @@ export const updateUsername = async (
   }
 
   if (!data) {
-    throw new Error("Failed to update username for the authenticated user.");
+    throw new Error("Failed to update profile details for the authenticated user.");
   }
 
   return data as User;

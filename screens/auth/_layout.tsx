@@ -49,7 +49,7 @@ export default ({
 
   const colorScheme = useColorScheme();
   const iconColor = colorScheme === "dark" ? "#fff" : "#000";
-  const isUsernameScreen = segments[0] === "(auth)" && segments[1] === "username";
+  const isUserdataScreen = segments[0] === "(auth)" && segments[1] === "userdata";
 
   return (
     <SafeAreaView>
@@ -61,7 +61,7 @@ export default ({
             <VStack className="items-center justify-center">
               <HStack className="justify-between w-full p-3">
                 {/* Dont show button if first screen / we have nothing to go back to */}
-                {!isUsernameScreen && router.canGoBack() ? (
+                {!isUserdataScreen && router.canGoBack() ? (
                   <Button
                     onPress={() => router.back()}
                     size="lg"

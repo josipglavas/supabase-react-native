@@ -25,7 +25,9 @@ import { router } from "expo-router";
 
 export default () => {
   const { user } = useAuth();
-  const displayUsername = user?.username || "You";
+  const displayName = user?.firstName || user?.lastName
+    ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
+    : "You";
   return (
     <SafeAreaView>
       <HStack className="items-center justify-center">
@@ -40,7 +42,7 @@ export default () => {
         <VStack>
           <HStack className="items-center px-5">
             <Avatar size="md">
-              <AvatarFallbackText>{displayUsername}</AvatarFallbackText>
+              <AvatarFallbackText>{displayName}</AvatarFallbackText>
               <AvatarImage
                 source={user?.avatar ? { uri: user.avatar } : undefined}
               />
@@ -50,7 +52,7 @@ export default () => {
               <VStack className="justify-start px-3" space="lg">
                 <VStack>
                   <Heading size="md" className="mb-1">
-                    {displayUsername}
+                    {displayName}
                   </Heading>
                   <Text size="md">What's new?</Text>
                 </VStack>

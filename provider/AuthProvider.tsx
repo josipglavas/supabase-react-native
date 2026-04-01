@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { createProfileIfMissing, updateUsername } from "@/lib/auth/profile";
+import { createProfileIfMissing, updateProfileDetails } from "@/lib/auth/profile";
 import {
   loginWithApple,
   loginWithEmail,
@@ -21,7 +21,11 @@ type AuthContextType = {
   registerEmail: (email: string, password: string) => Promise<void>;
   loginGoogle: () => Promise<void>;
   loginApple: () => Promise<void>;
-  completeUsername: (username: string) => Promise<void>;
+  completeUserdata: (
+    firstName: string,
+    lastName: string,
+    phone?: string,
+  ) => Promise<void>;
   logOut: () => Promise<void>;
   clearAuthError: () => void;
 };
@@ -35,7 +39,7 @@ const defaultContext: AuthContextType = {
   registerEmail: async () => {},
   loginGoogle: async () => {},
   loginApple: async () => {},
-  completeUsername: async () => {},
+  completeUserdata: async () => {},
   logOut: async () => {},
   clearAuthError: () => {},
 };
@@ -58,14 +62,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const getErrorMessage = (error: unknown) => {
     if (error instanceof Error) {
       const message = error.message.toLowerCase();
-      if (
-        message.includes("duplicate key") ||
-        message.includes("already exists") ||
-        message.includes("unique constraint") ||
-        message.includes("duplicate")
-      ) {
-        return "That username is already taken. Please choose another.";
+      // switch  on message to return user-friendly messages for known errors eg. Invalid login credentials or User is already registered
+      if (message.includes("invalid login credentials")) {
+        return "Invalid email or password. Please try again.";
       }
+      if (message.includes("user already registered")) {
+        return "An account with this email already exists. Please log in or use a different email.";
+      }
+      
       return error.message;
     }
 
@@ -125,7 +129,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data, error } = await registerWithEmail(email, password);
 
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getErrorMessage(error));;
       throw error;
     }
 
@@ -139,8 +143,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginEmail = async (email: string, password: string) => {
     clearAuthError();
     const { error } = await loginWithEmail(email, password);
+    console.log("[AuthProvider] loginEmail result", { error });
     if (error) {
-      setAuthError(error.message);
+      setAuthError(getErrorMessage(error));;
       throw error;
     }
   };
@@ -171,10 +176,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const completeUsername = async (username: string) => {
+  const completeUserdata = async (
+    firstName: string,
+    lastName: string,
+    phone?: string,
+  ) => {
     const profileId = user?.id ?? session?.user.id;
-    console.log("[AuthProvider] completeUsername start", {
-      username,
+    console.log("[AuthProvider] completeUserdata start", {
+      firstName,
+      lastName,
+      phone,
       profileId,
       currentUser: user,
       sessionUserId: session?.user.id,
@@ -187,11 +198,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     clearAuthError();
 
     try {
-      const updatedUser = await updateUsername(profileId, username);
-      console.log("[AuthProvider] completeUsername success", { updatedUser });
+      const updatedUser = await updateProfileDetails(
+        profileId,
+        firstName,
+        lastName,
+        phone,
+      );
+      console.log("[AuthProvider] completeUserdata success", { updatedUser });
       setUser(updatedUser);
     } catch (error) {
-      console.log("[AuthProvider] completeUsername error", { error });
+      console.log("[AuthProvider] completeUserdata error", { error });
       setAuthError(getErrorMessage(error));
       throw error;
     }
@@ -251,20 +267,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isInitializing,
         isSyncingProfile,
         sessionExists: Boolean(session),
-        username: user?.username,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
         segments,
       });
       return;
     }
 
     const inAuthGroup = segments[0] === "(auth)";
-    const inUsernameScreen = inAuthGroup && segments[1] === "username";
+    const inUserdataScreen = inAuthGroup && segments[1] === "userdata";
 
     console.log("[AuthProvider] route check", {
       inAuthGroup,
-      inUsernameScreen,
+      inUserdataScreen,
       sessionExists: Boolean(session),
-      username: user?.username,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
       segments,
     });
 
@@ -275,11 +293,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const usernameMissing = !user?.username;
+    const profileIncomplete = !user?.firstName || !user?.lastName;
 
-    if (usernameMissing) {
-      if (!inUsernameScreen) {
-        router.replace("/(auth)/username");
+    if (profileIncomplete) {
+      if (!inUserdataScreen) {
+        router.replace("/(auth)/userdata");
       }
       return;
     }
@@ -287,7 +305,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (inAuthGroup) {
       router.replace("/(tabs)");
     }
-  }, [isInitializing, isSyncingProfile, router, segments, session, user?.username]);
+  }, [
+    isInitializing,
+    isSyncingProfile,
+    router,
+    segments,
+    session,
+    user?.firstName,
+    user?.lastName,
+  ]);
 
   return (
     <AuthContext.Provider
@@ -300,7 +326,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         registerEmail,
         loginGoogle: loginGoogleProvider,
         loginApple: loginAppleProvider,
-        completeUsername,
+        completeUserdata,
         logOut,
         clearAuthError,
       }}

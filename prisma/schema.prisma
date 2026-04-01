@@ -16,9 +16,11 @@ datasource db {
 }
 
 model User {
-  id         String     @id 
-  username   String?    @unique
-  avatar     String?
-  email      String?
-  created_at DateTime   @default(now())
+  id          String     @id
+  firstName   String?
+  lastName    String?
+  phone       String?
+  avatar      String?
+  email       String     @unique
+  created_at  DateTime   @default(now())
 }

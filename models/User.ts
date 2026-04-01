@@ -1,7 +1,8 @@
 type User = {
   id: string;
-  username: string;
-  avatar: string;
+  username?: string | null;
+  avatar?: string | null;
+  email?: string | null;
   created_at: string;
 };
 

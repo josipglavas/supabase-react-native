@@ -1,23 +1,23 @@
+import { useState } from "react";
+import { useRouter } from "expo-router";
+import { Text } from "@/components/ui/text";
+import { Pressable } from "react-native";
+import Layout from "./_layout";
 import { EmailPasswordFields } from "@/components/auth/EmailPasswordFields";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAuth } from "@/provider/AuthProvider";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import Layout from "./_layout";
-import { Text } from "@/components/ui/text";
-import { Pressable } from "react-native";
 
 export default () => {
-  const { loginEmail, loginGoogle, loginApple, authError } = useAuth();
+  const router = useRouter();
+  const { registerEmail, loginGoogle, loginApple, authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loadingProvider, setLoadingProvider] = useState<
     "google" | "apple" | null
   >(null);
-  const router = useRouter();
 
-  const handleLogin = async () => {
-    await loginEmail(email, password);
+  const handleRegister = async () => {
+    await registerEmail(email, password);
   };
 
   const handleGoogle = async () => {
@@ -40,15 +40,13 @@ export default () => {
 
   return (
     <Layout
-      onPress={handleLogin}
-      buttonText="Log In"
+      onPress={handleRegister}
+      buttonText="Create Account"
       buttonDisabled={!email.trim() || password.length < 6}
     >
-      <Text className="text-lg font-bold text-typography-900">
-        Welcome back
-      </Text>
+      <Text className="text-lg font-bold text-typography-900">Register</Text>
       <Text className="text-typography-700">
-        Log in with email and password.
+        Create an account with email and password.
       </Text>
 
       <EmailPasswordFields
@@ -66,9 +64,9 @@ export default () => {
 
       {authError ? <Text className="text-error-600">{authError}</Text> : null}
 
-      <Pressable onPress={() => router.navigate("/register")}>
+      <Pressable onPress={() => router.replace("/(auth)")}>
         <Text className="text-center text-typography-700">
-          New here? Create an account
+          Already have an account? Log in
         </Text>
       </Pressable>
     </Layout>

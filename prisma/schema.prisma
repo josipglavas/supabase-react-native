@@ -19,5 +19,6 @@ model User {
   id         String     @id 
   username   String?    @unique
   avatar     String?
+  email      String?
   created_at DateTime   @default(now())
 }

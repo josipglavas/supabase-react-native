@@ -6,15 +6,15 @@ import { useAuth } from "@/provider/AuthProvider";
 
 export default () => {
   const [username, setUsername] = React.useState("");
-  const { createUser } = useAuth();
+  const { completeUsername, authError } = useAuth();
 
   return (
     <Layout
-      onPress={() => createUser(username)}
-      buttonText="Create Account"
-      buttonDisabled={!username}
+      onPress={() => completeUsername(username)}
+      buttonText="Continue"
+      buttonDisabled={!username.trim()}
     >
-      <Text className="text-typography-900 mb-2">Create Account</Text>
+      <Text className="text-typography-900 mb-2">Choose a username</Text>
       <Input variant="outline" size="md">
         <InputField
           placeholder="Enter username"
@@ -22,6 +22,7 @@ export default () => {
           onChangeText={setUsername}
         />
       </Input>
+      {authError ? <Text className="text-error-600">{authError}</Text> : null}
     </Layout>
   );
 };

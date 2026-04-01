@@ -22,10 +22,10 @@ import {
 } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 import { router } from "expo-router";
-import User from "@/models/User";
 
 export default () => {
-  const { user } = useAuth() as unknown as { user: User };
+  const { user } = useAuth();
+  const displayUsername = user?.username || "You";
   return (
     <SafeAreaView>
       <HStack className="items-center justify-center">
@@ -40,11 +40,9 @@ export default () => {
         <VStack>
           <HStack className="items-center px-5">
             <Avatar size="md">
-              <AvatarFallbackText>{user?.username}</AvatarFallbackText>
+              <AvatarFallbackText>{displayUsername}</AvatarFallbackText>
               <AvatarImage
-                source={{
-                  uri: user?.avatar,
-                }}
+                source={user?.avatar ? { uri: user.avatar } : undefined}
               />
               <AvatarBadge />
             </Avatar>
@@ -52,7 +50,7 @@ export default () => {
               <VStack className="justify-start px-3" space="lg">
                 <VStack>
                   <Heading size="md" className="mb-1">
-                    {user?.username}
+                    {displayUsername}
                   </Heading>
                   <Text size="md">What's new?</Text>
                 </VStack>

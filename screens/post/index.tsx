@@ -19,26 +19,24 @@ import {
 } from "lucide-react-native";
 import { View } from "react-native";
 import { Input, InputField } from "@/components/ui/input";
-import User from "@/models/User";
 
 export default () => {
-  const { user } = useAuth() as unknown as { user: User };
+  const { user } = useAuth();
+  const displayUsername = user?.username || "You";
   return (
     <SafeAreaView className="py-4">
       <VStack>
         <HStack className="items-center px-5 py-0">
           <Avatar size="md">
-            <AvatarFallbackText>{user?.username}</AvatarFallbackText>
+            <AvatarFallbackText>{displayUsername}</AvatarFallbackText>
             <AvatarImage
-              source={{
-                uri: user?.avatar,
-              }}
+              source={user?.avatar ? { uri: user.avatar } : undefined}
             />
           </Avatar>
           <Card size="md" variant="ghost" className="mx-3 py-1 w-full">
             <VStack className="justify-start px-3" space="lg">
               <VStack>
-                <Heading size="md">{user?.username}</Heading>
+                <Heading size="md">{displayUsername}</Heading>
                 <Input
                   className="bg-transparent border-0 w-[90%] p-0"
                   size="md"

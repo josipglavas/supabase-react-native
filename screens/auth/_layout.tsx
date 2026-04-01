@@ -28,7 +28,7 @@ export default ({
   buttonDisabled,
 }: {
   children: React.ReactNode;
-  onPress: () => void;
+  onPress: () => Promise<void> | void;
   buttonText: string;
   buttonDisabled: boolean;
 }) => {
@@ -36,10 +36,10 @@ export default ({
   const [loading, setLoading] = useState(false);
 
   // handle button press with loading state
-  const handlePress = () => {
+  const handlePress = async () => {
     setLoading(true);
     try {
-      onPress();
+      await onPress();
     } finally {
       setLoading(false);
     }

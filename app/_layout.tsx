@@ -11,7 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { AuthProvider } from "@/provider/AuthProvider";
-import { useColorScheme } from "nativewind";
+import { useAppTheme } from "@/hooks/useAppTheme";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -40,7 +40,9 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const { colorScheme } = useColorScheme();
+  const { colorScheme, isReady } = useAppTheme();
+
+  if (!isReady) return null;
 
   return (
     <GluestackUIProvider mode={colorScheme}>
@@ -52,7 +54,7 @@ function RootLayoutNav() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen
-              name="post"
+              name="pet"
               options={{ headerShown: false, presentation: "modal" }}
             />
             <Stack.Screen name="+not-found" />

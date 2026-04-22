@@ -1,10 +1,10 @@
 import { HStack } from "@/components/ui/hstack";
 import { Switch } from "@/components/ui/switch";
 import { Icon, MoonIcon, SunIcon } from "@/components/ui/icon";
-import { useColorScheme } from "nativewind";
+import { useAppTheme } from "@/hooks/useAppTheme";
 
 export const ThemeToggle = () => {
-  const { colorScheme, toggleColorScheme } = useColorScheme();
+  const { colorScheme, toggleTheme } = useAppTheme();
   const isDark = colorScheme === "dark";
 
   return (
@@ -18,13 +18,7 @@ export const ThemeToggle = () => {
       <Switch
         size="md"
         value={isDark}
-        onToggle={toggleColorScheme}
-        trackColor={{
-          false: isDark ? "#404040" : "#d4d4d4",
-          true: "#525252",
-        }}
-        thumbColor="#fafafa"
-        ios_backgroundColor={isDark ? "#404040" : "#d4d4d4"}
+        onToggle={toggleTheme}
       />
 
       <Icon

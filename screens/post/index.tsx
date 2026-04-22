@@ -19,12 +19,51 @@ import {
 } from "lucide-react-native";
 import { View } from "react-native";
 import { Input, InputField } from "@/components/ui/input";
+import { Alert, Image } from "react-native";
+import { useState } from "react";
+import { ButtonText, Button } from "@/components/ui/button";
+import * as ImagePicker from "expo-image-picker";
 
 export default () => {
   const { user } = useAuth();
-  const displayName = user?.firstName || user?.lastName
-    ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
-    : "You";
+
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library.
+    // Manually request permissions for videos on iOS when `allowsEditing` is set to `false`
+    // and `videoExportPreset` is `'Passthrough'` (the default), ideally before launching the picker
+    // so the app users aren't surprised by a system dialog after picking a video.
+    // See "Invoke permissions for videos" sub section for more details.
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert(
+        "Permission required",
+        "Permission to access the media library is required.",
+      );
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images", "videos"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const displayName =
+    user?.firstName || user?.lastName
+      ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
+      : "You";
   return (
     <SafeAreaView className="py-4">
       <VStack>
@@ -62,6 +101,21 @@ export default () => {
           <Hash size={24} color={"gray"} strokeWidth={1.5} />
           <MapPin size={24} color={"gray"} strokeWidth={1.5} />
         </HStack>
+        <Button
+          onPress={pickImage}
+          size="lg"
+          className="w-full rounded-xl"
+          variant="solid"
+          action="primary"
+        >
+          <ButtonText>Pick an image</ButtonText>
+        </Button>
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{ width: 200, height: 200, borderRadius: 10 }}
+          />
+        )}
       </VStack>
     </SafeAreaView>
   );

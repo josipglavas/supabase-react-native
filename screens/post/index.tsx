@@ -23,6 +23,7 @@ import { Alert, Image } from "react-native";
 import { useState } from "react";
 import { ButtonText, Button } from "@/components/ui/button";
 import * as ImagePicker from "expo-image-picker";
+import { supabase } from "@/lib/supabase";
 
 export default () => {
   const { user } = useAuth();
@@ -47,7 +48,7 @@ export default () => {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images", "videos"],
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -55,8 +56,37 @@ export default () => {
 
     console.log(result);
 
-    if (!result.canceled) {
+    if (
+      !result.canceled &&
+      result.assets.length > 0 &&
+      result.assets[0].uri &&
+      result.assets[0].mimeType
+    ) {
       setImage(result.assets[0].uri);
+      // upload file name without "/" and .pop()
+      let fileName = result.assets[0].uri.split("/").pop();
+      if (!fileName) {
+        Alert.alert("Error", "Could not get file name from URI.");
+        return;
+      }
+      uploadFile(result.assets[0].uri, result.assets[0].mimeType, fileName);
+    }
+  };
+
+  const uploadFile = async (uri: string, type: string, name: string) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .upload(`${user?.id}/${name}`, blob, {
+          contentType: type,
+        });
+
+      console.log("Upload result:", { data, error });
+    } catch (err) {
+      console.error("Upload failed:", err);
     }
   };
 

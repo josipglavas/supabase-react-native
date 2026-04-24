@@ -110,4 +110,6 @@ export const loginWithGoogle = async () => signInWithOAuthProvider("google");
 
 export const loginWithApple = async () => signInWithOAuthProvider("apple");
 
+export const loginWithAzure = async () => signInWithOAuthProvider("azure");
+
 export const signOut = async () => supabase.auth.signOut();

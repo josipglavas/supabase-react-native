@@ -8,14 +8,14 @@ import { Text } from "@/components/ui/text";
 import { Pressable } from "react-native";
 
 export default () => {
-  const { loginEmail, loginGoogle, authError } = useAuth();
+  const { loginEmail, loginGoogle, loginAzure, authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [loadingProvider, setLoadingProvider] = useState<
   //   "google" | "apple" | null
   // >(null);
     const [loadingProvider, setLoadingProvider] = useState<
-    "google" | null
+    "google" | "azure" | null
   >(null);
   const router = useRouter();
 
@@ -31,6 +31,15 @@ export default () => {
       setLoadingProvider(null);
     }
   };
+
+  const handleAzure = async () => {
+    setLoadingProvider("azure");
+    try {
+      await loginAzure();
+    } finally {
+      setLoadingProvider(null);
+    }
+  }
 
   // const handleApple = async () => {
   //   setLoadingProvider("apple");
@@ -63,6 +72,7 @@ export default () => {
 
       <OAuthButtons
         onGooglePress={handleGoogle}
+        onAzurePress={handleAzure}
         // onApplePress={handleApple}
         loadingProvider={loadingProvider}
       />

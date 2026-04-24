@@ -3,6 +3,7 @@ import { createProfileIfMissing, updateProfileDetails } from "@/lib/auth/profile
 import {
   loginWithApple,
   loginWithEmail,
+  loginWithAzure,
   loginWithGoogle,
   registerWithEmail,
   signOut,
@@ -21,6 +22,7 @@ type AuthContextType = {
   registerEmail: (email: string, password: string) => Promise<void>;
   loginGoogle: () => Promise<void>;
   loginApple: () => Promise<void>;
+  loginAzure: () => Promise<void>;
   completeUserdata: (
     firstName: string,
     lastName: string,
@@ -39,6 +41,7 @@ const defaultContext: AuthContextType = {
   registerEmail: async () => {},
   loginGoogle: async () => {},
   loginApple: async () => {},
+  loginAzure: async () => {},
   completeUserdata: async () => {},
   logOut: async () => {},
   clearAuthError: () => {},
@@ -62,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const getErrorMessage = (error: unknown) => {
     if (error instanceof Error) {
       const message = error.message.toLowerCase();
-      // switch  on message to return user-friendly messages for known errors eg. Invalid login credentials or User is already registered
+      // switch on message to return user-friendly messages for known errors eg. Invalid login credentials or User is already registered
       if (message.includes("invalid login credentials")) {
         return "Invalid email or password. Please try again.";
       }
@@ -162,6 +165,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       throw error;
     }
   };
+
+  const loginAzureProvider = async () => {
+    console.log("[AuthProvider] loginAzureProvider start");
+    clearAuthError();
+    try {
+      await loginWithAzure();
+      console.log("[AuthProvider] loginAzureProvider success");
+    } catch (error) {
+      console.log("[AuthProvider] loginAzureProvider error", { error });
+      setAuthError(getErrorMessage(error));
+      throw error;
+    }
+  }
 
   const loginAppleProvider = async () => {
     console.log("[AuthProvider] loginAppleProvider start");
@@ -325,6 +341,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loginEmail,
         registerEmail,
         loginGoogle: loginGoogleProvider,
+        loginAzure: loginAzureProvider,
         loginApple: loginAppleProvider,
         completeUserdata,
         logOut,

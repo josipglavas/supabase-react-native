@@ -1,22 +1,25 @@
-import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
-import { HStack } from "@/components/ui/hstack";
+import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import { VStack } from "@/components/ui/vstack";
 import GoogleIcon from "./GoogleIcon";
+import MicrosoftIcon from "./MicrosoftIcon";
 
 
 type OAuthButtonsProps = {
   onGooglePress: () => Promise<void>;
+  onAzurePress: () => Promise<void>;
   // onApplePress: () => Promise<void>;
   // loadingProvider: "google" | "apple" | null;
-  loadingProvider: "google" | null;
+  loadingProvider: "google"| "azure" | null;
 };
 
 export const OAuthButtons = ({
   onGooglePress,
+  onAzurePress,
   // onApplePress,
   loadingProvider,
 }: OAuthButtonsProps) => {
   return (
-    <HStack space="sm" className="w-full">
+    <VStack space="sm" className="w-full">
       <Button
         className="flex-1 group"
         variant="outline"
@@ -25,10 +28,23 @@ export const OAuthButtons = ({
         onPress={onGooglePress}
         isDisabled={loadingProvider !== null}
       >
-        {/* google icon, make it opacity if button is not hovered onto */}
+        {/* google icon, make it opacity if button is not hovered onto. Added spcaes so the icons align */}
         <GoogleIcon className="opacity-50 group-hover:opacity-100" />
-        <ButtonText>Continue with Google</ButtonText>
+        <ButtonText>Continue with Google    </ButtonText>
         {loadingProvider === "google" && <ButtonSpinner />}
+      </Button>
+
+      <Button
+        className="flex-1 group"
+        variant="outline"
+        action="secondary"
+        size="lg"
+        onPress={onAzurePress}
+        isDisabled={loadingProvider !== null}
+      >
+        <MicrosoftIcon className="opacity-50 group-hover:opacity-100" />
+        <ButtonText>Continue with Microsoft</ButtonText>
+        {loadingProvider === "azure" && <ButtonSpinner />}
       </Button>
 
       {/* <Button
@@ -44,6 +60,6 @@ export const OAuthButtons = ({
         </ButtonText>
         {loadingProvider === "apple" && <ButtonSpinner />}
       </Button> */}
-    </HStack>
+    </VStack>
   );
 };

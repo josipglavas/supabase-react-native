@@ -1,4 +1,4 @@
-import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { VStack } from "@/components/ui/vstack";
 import GoogleIcon from "./GoogleIcon";
 import MicrosoftIcon from "./MicrosoftIcon";
@@ -21,10 +21,10 @@ export const OAuthButtons = ({
   return (
     <VStack space="sm" className="w-full">
       <Button
-        className="flex-1 group"
+        size="lg"
+        className="w-full rounded-xl group"
         variant="outline"
         action="secondary"
-        size="lg"
         onPress={onGooglePress}
         isDisabled={loadingProvider !== null}
       >
@@ -35,10 +35,10 @@ export const OAuthButtons = ({
       </Button>
 
       <Button
-        className="flex-1 group"
+        size="lg"
+        className="w-full rounded-xl group"
         variant="outline"
         action="secondary"
-        size="lg"
         onPress={onAzurePress}
         isDisabled={loadingProvider !== null}
       >

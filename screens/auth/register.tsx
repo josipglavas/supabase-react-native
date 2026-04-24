@@ -6,8 +6,6 @@ import Layout from "./_layout";
 import { EmailPasswordFields } from "@/components/auth/EmailPasswordFields";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAuth } from "@/provider/AuthProvider";
-import { Divider } from "@/components/ui/divider";
-import { HStack } from "@/components/ui/hstack";
 import { Center } from "@/components/ui/center";
 
 export default () => {

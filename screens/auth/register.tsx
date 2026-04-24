@@ -6,14 +6,17 @@ import Layout from "./_layout";
 import { EmailPasswordFields } from "@/components/auth/EmailPasswordFields";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAuth } from "@/provider/AuthProvider";
+import { Divider } from "@/components/ui/divider";
+import { HStack } from "@/components/ui/hstack";
+import { Center } from "@/components/ui/center";
 
 export default () => {
   const router = useRouter();
-  const { registerEmail, loginGoogle, authError } = useAuth();
+  const { registerEmail, loginGoogle, loginAzure, authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loadingProvider, setLoadingProvider] = useState<
-    "google" | null
+    "google"| "azure" | null
   >(null);
 
   const handleRegister = async () => {
@@ -28,6 +31,15 @@ export default () => {
       setLoadingProvider(null);
     }
   };
+
+  const handleAzure = async () => {
+    setLoadingProvider("azure");
+    try {
+      await loginAzure();
+    } finally {
+      setLoadingProvider(null);
+    }
+  }
 
   // const handleApple = async () => {
   //   setLoadingProvider("apple");
@@ -54,10 +66,15 @@ export default () => {
         password={password}
         onEmailChange={setEmail}
         onPasswordChange={setPassword}
-      />
-
+      />  
+      
+      <Center>
+        <Text className="font-semibold">Or Continue with</Text>
+      </Center>
+      
       <OAuthButtons
         onGooglePress={handleGoogle}
+        onAzurePress={handleAzure}
         // onApplePress={handleApple}
         loadingProvider={loadingProvider}
       />

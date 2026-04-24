@@ -6,6 +6,7 @@ import { useState } from "react";
 import Layout from "./_layout";
 import { Text } from "@/components/ui/text";
 import { Pressable } from "react-native";
+import { Center } from "@/components/ui/center";
 
 export default () => {
   const { loginEmail, loginGoogle, loginAzure, authError } = useAuth();
@@ -69,6 +70,10 @@ export default () => {
         onEmailChange={setEmail}
         onPasswordChange={setPassword}
       />
+
+      <Center>
+        <Text className="font-semibold">Or Continue with</Text>
+      </Center>
 
       <OAuthButtons
         onGooglePress={handleGoogle}

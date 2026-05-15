@@ -6,6 +6,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { isLiquidGlassSupported } from "@callstack/liquid-glass";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -50,7 +51,16 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack initialRouteName="(auth)">
+          <Stack
+            initialRouteName="(auth)"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: isLiquidGlassSupported
+                  ? "transparent"
+                  : undefined,
+              },
+            }}
+          >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen

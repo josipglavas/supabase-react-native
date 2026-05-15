@@ -1,67 +1,130 @@
 import React from "react";
-import { Tabs, useRouter } from "expo-router";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { Platform, type ColorValue } from "react-native";
+import { useRouter } from "expo-router";
 import { Heart, Home, Plus, Search, User } from "lucide-react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { isLiquidGlassSupported } from "@callstack/liquid-glass";
+import type { BottomTabNavigationOptions } from "@react-navigation/bottom-tabs";
+import HomeScreen from "./index";
+import SearchScreen from "./search";
+import ActivityScreen from "./activity";
+import ProfileScreen from "./profile";
 
-// function TabBarIcon(props: {
-//   name: React.ComponentProps<typeof FontAwesome>["name"];
-//   color: string;
-// }) {
-//   return <FontAwesome size={24} style={{ marginBottom: -3 }} {...props} />;
-// }
+const Tab = createBottomTabNavigator();
+
+const tabImplementation =
+  Platform.OS === "ios" || Platform.OS === "android" ? "native" : "custom";
+
+type TabIconProps = { focused: boolean; color: ColorValue; size: number };
+
+function lucideTabIcon(
+  Icon: typeof Home,
+): NonNullable<BottomTabNavigationOptions["tabBarIcon"]> {
+  return ({ color, size }: TabIconProps) => (
+    <Icon size={size} color={String(color)} />
+  );
+}
 
 export default function TabLayout() {
   const router = useRouter();
+
   return (
-    <Tabs
+    <Tab.Navigator
+      implementation={tabImplementation}
       screenOptions={{
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: false, //useClientOnlyValue(false, true),
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: isLiquidGlassSupported ? "transparent" : undefined,
+        },
+        tabBarLabelVisibilityMode:
+          Platform.OS === "android" ? "unlabeled" : undefined,
       }}
     >
-      <Tabs.Screen
+      <Tab.Screen
         name="index"
+        component={HomeScreen}
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
+          tabBarAccessibilityLabel: "Home",
+          tabBarIcon:
+            tabImplementation === "native"
+              ? Platform.select({
+                  ios: { type: "sfSymbol" as const, name: "house.fill" },
+                  android: { type: "materialSymbol" as const, name: "home" },
+                })
+              : lucideTabIcon(Home),
         }}
       />
-      <Tabs.Screen
+      <Tab.Screen
         name="search"
+        component={SearchScreen}
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <Search size={24} color={color} />,
+          tabBarAccessibilityLabel: "Search",
+          tabBarIcon:
+            tabImplementation === "native"
+              ? Platform.select({
+                  ios: { type: "sfSymbol" as const, name: "magnifyingglass" },
+                  android: { type: "materialSymbol" as const, name: "search" },
+                })
+              : lucideTabIcon(Search),
         }}
       />
-      <Tabs.Screen
+      <Tab.Screen
         name="empty"
+        component={() => null}
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <Plus size={24} color={color} />,
+          tabBarAccessibilityLabel: "New post",
+          tabBarIcon:
+            tabImplementation === "native"
+              ? Platform.select({
+                  ios: { type: "sfSymbol" as const, name: "plus.circle.fill" },
+                  android: {
+                    type: "materialSymbol" as const,
+                    name: "add_circle",
+                  },
+                })
+              : lucideTabIcon(Plus),
+          tabBarSelectionEnabled: false,
         }}
         listeners={{
           tabPress: (e) => {
-            router.push("/post");
-            // Prevent default action
             e.preventDefault();
+            router.push("/post");
           },
         }}
       />
-      <Tabs.Screen
+      <Tab.Screen
         name="activity"
+        component={ActivityScreen}
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
+          tabBarAccessibilityLabel: "Activity",
+          tabBarIcon:
+            tabImplementation === "native"
+              ? Platform.select({
+                  ios: { type: "sfSymbol" as const, name: "heart.fill" },
+                  android: { type: "materialSymbol" as const, name: "favorite" },
+                })
+              : lucideTabIcon(Heart),
         }}
       />
-      <Tabs.Screen
+      <Tab.Screen
         name="profile"
+        component={ProfileScreen}
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <User size={24} color={color} />,
+          tabBarAccessibilityLabel: "Profile",
+          tabBarIcon:
+            tabImplementation === "native"
+              ? Platform.select({
+                  ios: { type: "sfSymbol" as const, name: "person.fill" },
+                  android: { type: "materialSymbol" as const, name: "person" },
+                })
+              : lucideTabIcon(User),
         }}
       />
-    </Tabs>
+    </Tab.Navigator>
   );
 }

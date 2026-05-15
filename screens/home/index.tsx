@@ -25,9 +25,10 @@ import { router } from "expo-router";
 
 export default () => {
   const { user } = useAuth();
-  const displayName = user?.firstName || user?.lastName
-    ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
-    : "You";
+  const displayName =
+    user?.firstName || user?.lastName
+      ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
+      : "You";
   return (
     <SafeAreaView>
       <HStack className="items-center justify-center">

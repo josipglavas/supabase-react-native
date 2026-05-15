@@ -1,0 +1,24 @@
+diff --git a/node_modules/expo-router/build/fork/NavigationContainer.js b/node_modules/expo-router/build/fork/NavigationContainer.js
+index 0b3e02a..f781308 100644
+--- a/node_modules/expo-router/build/fork/NavigationContainer.js
++++ b/node_modules/expo-router/build/fork/NavigationContainer.js
+@@ -46,7 +46,6 @@ function NavigationContainerInner({ direction = react_native_1.I18nManager.getCo
+         ...linking,
+     }, setLastUnhandledLink);
+     const linkingContext = react_1.default.useMemo(() => ({ options: linking }), [linking]);
+-    const unhandledLinkingContext = react_1.default.useMemo(() => ({ lastUnhandledLink, setLastUnhandledLink }), [lastUnhandledLink, setLastUnhandledLink]);
+     const onReadyForLinkingHandling = (0, use_latest_callback_1.default)(() => {
+         // If the screen path matches lastUnhandledLink, we do not track it
+         const path = refContainer.current?.getCurrentRoute()?.path;
+@@ -96,11 +95,9 @@ function NavigationContainerInner({ direction = react_native_1.I18nManager.getCo
+         return <native_1.ThemeProvider value={theme}>{fallback}</native_1.ThemeProvider>;
+     }
+     return (<native_1.LocaleDirContext.Provider value={direction}>
+-      <native_1.UNSTABLE_UnhandledLinkingContext.Provider value={unhandledLinkingContext}>
+         <native_1.LinkingContext.Provider value={linkingContext}>
+           <native_1.BaseNavigationContainer {...rest} theme={theme} onReady={onReadyForLinkingHandling} onStateChange={onStateChangeForLinkingHandling} initialState={rest.initialState == null ? initialState : rest.initialState} ref={refContainer}/>
+         </native_1.LinkingContext.Provider>
+-      </native_1.UNSTABLE_UnhandledLinkingContext.Provider>
+     </native_1.LocaleDirContext.Provider>);
+ }
+ exports.NavigationContainer = react_1.default.forwardRef(NavigationContainerInner);
